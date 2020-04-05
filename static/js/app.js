@@ -1,47 +1,37 @@
 // from data.js
-//var table
-//Data = data;
-var ufodata = data;
+var ufoData = data;
 
-// YOUR CODE HERE!
-var tbody = d3.select("tbody")
+// select tbody 
+tbody = d3.select("tbody")
 
-console.log(data);
+// using Object.entries to get key, value data inside of the table
+// and loop through them to add to the table in html
+function displayData(data){ 
+    tbody.text("")
+    data.forEach(function(sighting){
+    new_tr = tbody.append("tr")
+    Object.entries(sighting).forEach(function([key, value]){
+        new_td = new_tr.append("td").text(value)	
+    })
+})}
 
-// // Step 1: Loop Through `data` and console.log each weather report object
-data.forEach(function(weatherReport) {
-   console.log(weatherReport);
- });
+displayData(ufoData)
 
+//select the web user's input and the filter button
+var dateInputText = d3.select("#datetime")
+var button = d3.select("filter-btn")
 
-data.forEach(function(weatherReport) {
-  console.log(weatherReport);
-  var row = tbody.append("tr");
-  Object.entries(weatherReport).forEach(function([key, value]) {
-    console.log(key, value);
-    // Append a cell to the row for each value
-    // in the weather report object
-    var cell = row.append("td");
-    cell.text(value);
-  });
-});
+// filter data with user input date
+function clickSelect(){
+    //prevents page from being refreshed
+    d3.event.preventDefault();
+    //print the value that was input
+    console.log(dateInputText.property("value"));
+    //create a new table showing only the filterd data
+    var new_table = ufoData.filter(sighting => sighting.datetime===dateInputText.property("value"))
+    //display the new table
+    displayData(new_table);
+}
 
-//////////////////
- // Select the button
-var button = d3.select("#filter-btn");
-
-button.on("click", function() {
-  // Select the input element and get the raw HTML node
-  var inputElement = d3.select("#datetime");
-  // Get the value property of the input element
-  var inputValue = inputElement.property("value");
-
-  console.log(inputValue);
-  console.log(ufodata);
-
-  var filteredData = ufodata.filter(person => person.datetime > inputValue);
-
-  console.log(filteredData);
-});
-
- 
+// event listener to handle change and click
+dateInputText.on("change", clickSelect)
